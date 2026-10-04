@@ -40,7 +40,7 @@ def probe():
     if not _host_allowed(host):
         return jsonify({"error": "host not allowed"}), 403
 
-    # If the host is a literal IP, refuse — avoids probing internal ranges.
+    # If the host is a literal IP, refuse - avoids probing internal ranges.
     try:
         ip = ipaddress.ip_address(host)
         if ip.is_private or ip.is_loopback or ip.is_link_local:

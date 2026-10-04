@@ -10,7 +10,7 @@ sleep 1
 # 2. Fail fast if ports are still busy (invisible orphan case)
 for port in 10000 10001; do
     if python -c "import socket,sys; s=socket.socket(); s.settimeout(0.5); sys.exit(0 if s.connect_ex(('127.0.0.1',$port))==0 else 1)" 2>/dev/null; then
-        echo "port $port still busy — abort. run ./stop.sh or restart Termux."
+        echo "port $port still busy - abort. run ./stop.sh or restart Termux."
         exit 1
     fi
 done
@@ -32,4 +32,4 @@ sleep 2
 echo "--- startup ---"
 head -n 8 logs/proxy.log
 echo "--- procs ---"
-ps -ef | grep -v grep | grep 'python -u server.py' || echo "(none — server failed to start)"
+ps -ef | grep -v grep | grep 'python -u server.py' || echo "(none - server failed to start)"

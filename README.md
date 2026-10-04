@@ -1,7 +1,7 @@
 # auth-proxy
 
 A single-file, environment-adaptive HTTP + CONNECT proxy with **Ed25519 public-key
-authentication** — SSH-style. No passwords. The server only stores public keys;
+authentication** - SSH-style. No passwords. The server only stores public keys;
 clients prove identity by signing a canonical request string with a private key
 that never leaves their machine.
 
@@ -12,10 +12,10 @@ Vercel, anywhere Python 3.8+ and `openssl` exist.**
 
 ## What it does
 
-- **HTTP proxy** — `GET /?url=https://target` fetches through the server.
+- **HTTP proxy** - `GET /?url=https://target` fetches through the server.
   Auth once via signature; server returns a session token that the client reuses
   until it expires (sliding TTL, default 600 s idle).
-- **Raw TCP CONNECT tunnel** — standard `CONNECT host:port` for HTTPS or any
+- **Raw TCP CONNECT tunnel** - standard `CONNECT host:port` for HTTPS or any
   TCP stream. **One connection = one auth.** Once established, bytes flow freely
   until either side closes.
 
@@ -64,7 +64,7 @@ Current state is visible in the JSON at `GET /` (`platform`, `tcp_port`, etc.).
    - `openssl pkeyutl -verify` accepts the signature
 5. On success, HTTP mints a **session token** (random 32 bytes) good for
    `SESSION_TTL` seconds of idle time, refreshed on each use.
-   CONNECT simply proceeds — the tunnel itself *is* the session.
+   CONNECT simply proceeds - the tunnel itself *is* the session.
 
 **A leaked server config cannot authenticate.** The server only has public keys.
 **A leaked password doesn't exist.** There is no password.
@@ -179,7 +179,7 @@ WSGI target:
 gunicorn -w 1 -k gthread --threads 8 -t 120 -b 0.0.0.0:$PORT server:app
 ```
 
-Use `-w 1` — the session and nonce stores are per-process. Multiple workers
+Use `-w 1` - the session and nonce stores are per-process. Multiple workers
 would each have their own store, which weakens replay protection and session
 consistency. If you need multiple workers, back the stores with Redis.
 
@@ -226,7 +226,7 @@ Then `fly deploy`. TCP proxy comes up automatically.
 - **Use the allowlist** on any public deployment. Open proxies get abused
   within hours of appearing on Shodan.
 - **TLS in front of the HTTP port** if the PaaS doesn't provide it (Render,
-  Fly, Cloud Run do; a bare VPS does not — put Caddy or nginx in front).
+  Fly, Cloud Run do; a bare VPS does not - put Caddy or nginx in front).
 - **Rotate keys** by adding a new PEM to `pubkeys.txt` and restarting, then
   removing the old line once clients have switched.
 - **Session tokens are in-memory.** Restart = all sessions invalidated. The
@@ -239,11 +239,11 @@ Then `fly deploy`. TCP proxy comes up automatically.
 
 **`[auth] loaded 0 public key(s)`**
 `PROXY_PUBKEYS` is unset, points to a missing file, or the key isn't Ed25519.
-Check `openssl pkey -pubin -in <file> -noout -text | head -1` — should say
+Check `openssl pkey -pubin -in <file> -noout -text | head -1` - should say
 `ED25519 Public-Key:`.
 
 **`{"error":"unauthorized","reason":"no_pubkeys_configured"}`**
-Same as above — server has no keys loaded.
+Same as above - server has no keys loaded.
 
 **`{"error":"unauthorized","reason":"timestamp_out_of_window"}`**
 Client clock is off by more than `AUTH_WINDOW` seconds. Fix with `ntpd`/`date -s`,
@@ -251,7 +251,7 @@ or raise `PROXY_AUTH_WINDOW`.
 
 **`{"error":"unauthorized","reason":"bad_session"}`**
 Cached `.proxy_session` no longer valid (server restarted, or TTL expired).
-The client auto-recovers — just retry.
+The client auto-recovers - just retry.
 
 **`{"error":"Connection failed","status":502,"detail":"..."}`**
 The server can't reach the upstream. The `detail` field shows the real reason.
@@ -272,9 +272,9 @@ OpenSSL < 1.1.1. Upgrade: `pkg upgrade openssl` (Termux) or `apt install openssl
 | File | Purpose |
 |---|---|
 | `server.py` | proxy server (HTTP + TCP) |
-| `proxycall.py` | client helper — sign requests, manage session |
+| `proxycall.py` | client helper - sign requests, manage session |
 | `requirements.txt` | server deps |
-| `proxy_client.key` | **your private key — never commit** |
+| `proxy_client.key` | **your private key - never commit** |
 | `proxy_client.pub` | your public key (goes to server) |
 | `pubkeys.txt` | optional list of authorized public keys |
 | `.proxy_session` | cached session token (client side) |
@@ -303,7 +303,7 @@ The TCP listener runs in a **forked child process**, not a thread:
 
 ### Tiny probe service
 
-`probe_service.py` — deploy on any always-on host with a public IP:
+`probe_service.py` - deploy on any always-on host with a public IP:
 
     PROBE_ALLOW_SUFFIXES=".yourdomain.com,proxy." PORT=8100 python probe_service.py
 
@@ -320,7 +320,7 @@ Refuses to probe private/loopback IPs and any hostname not matching
 ## Retry with calculated backoff
 
 Upstream HTTP fetches retry on transient network errors (`ConnectionError`,
-`Timeout`). The delay is exponential with jitter — a formula, not a lookup
+`Timeout`). The delay is exponential with jitter - a formula, not a lookup
 table:
 
     delay = min(PROXY_RETRY_CAP, PROXY_RETRY_BASE * 2^attempt) * (1 ± jitter)

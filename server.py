@@ -50,7 +50,7 @@ PROBE_HOST    = os.environ.get("PROXY_PUBLIC_HOST", "").strip()
 PROBE_TIMEOUT = float(os.environ.get("PROXY_PROBE_TIMEOUT", "5"))
 
 # Retry policy for upstream HTTP fetches (ConnectionError / Timeout).
-# Backoff is exponential with jitter, calculated — not a lookup table.
+# Backoff is exponential with jitter, calculated - not a lookup table.
 PROXY_RETRY_MAX   = int(os.environ.get("PROXY_RETRY_MAX", "2"))     # 2 => 3 total tries
 PROXY_RETRY_BASE  = float(os.environ.get("PROXY_RETRY_BASE", "0.5")) # seconds
 PROXY_RETRY_CAP   = float(os.environ.get("PROXY_RETRY_CAP", "10.0")) # seconds
@@ -744,7 +744,7 @@ def _backoff(attempt):
 
 def _request_with_retry(method, url, **kwargs):
     """requests.request with backoff on transient network errors.
-    Retries on ConnectionError and Timeout only — not on HTTP status errors."""
+    Retries on ConnectionError and Timeout only - not on HTTP status errors."""
     last_exc = None
     for attempt in range(PROXY_RETRY_MAX + 1):
         try:
@@ -1208,16 +1208,16 @@ def start_tcp_proxy():
     if PROBE_URL and PROBE_HOST:
         result = probe_reachable(PROBE_HOST, TCP_PORT)
         if result is False:
-            print(f"[tcp] probe: {PROBE_HOST}:{TCP_PORT} unreachable — not binding",
+            print(f"[tcp] probe: {PROBE_HOST}:{TCP_PORT} unreachable - not binding",
                   flush=True)
             return
         if result is True:
             print(f"[tcp] probe: {PROBE_HOST}:{TCP_PORT} confirmed reachable",
                   flush=True)
         else:
-            print("[tcp] probe inconclusive — binding anyway", flush=True)
+            print("[tcp] probe inconclusive - binding anyway", flush=True)
     elif PLATFORM in SINGLE_PORT_PLATFORMS:
-        print(f"[tcp] platform={PLATFORM} is single-port — not binding", flush=True)
+        print(f"[tcp] platform={PLATFORM} is single-port - not binding", flush=True)
         return
 
     try:
@@ -1227,7 +1227,7 @@ def start_tcp_proxy():
         s.listen(100)
         _listen_sock = s
     except OSError as e:
-        print(f"[tcp] cannot bind {HOST}:{TCP_PORT}: {e} — disabling", flush=True)
+        print(f"[tcp] cannot bind {HOST}:{TCP_PORT}: {e} - disabling", flush=True)
         return
     print(f"[tcp] listening on {HOST}:{TCP_PORT}", flush=True)
     s.settimeout(1.0)
@@ -1335,10 +1335,10 @@ def self_test():
     # probe config sanity
     if PROBE_URL and not PROBE_HOST:
         print("[self-test] probe: PROXY_PROBE_URL set but PROXY_PUBLIC_HOST "
-              "missing — probe disabled", flush=True)
+              "missing - probe disabled", flush=True)
     elif PROBE_HOST and not PROBE_URL:
         print("[self-test] probe: PROXY_PUBLIC_HOST set but PROXY_PROBE_URL "
-              "missing — probe disabled", flush=True)
+              "missing - probe disabled", flush=True)
     else:
         print("[self-test] probe: " +
               ("configured" if PROBE_URL else "not configured (ok)"), flush=True)

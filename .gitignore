@@ -1,4 +1,4 @@
-# secrets — never commit
+# secrets - never commit
 keys/
 proxy_client.key
 proxy_client.pub
