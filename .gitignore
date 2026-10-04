@@ -1,0 +1,36 @@
+# secrets — never commit
+keys/
+proxy_client.key
+proxy_client.pub
+pubkeys.txt
+*.pem
+*.key
+
+# runtime
+logs/
+data/
+*.log
+.proxy_session
+s2.log
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# termux scratch
+*.tmp
+
+# local test artifacts
+test_connect.py
+users.json

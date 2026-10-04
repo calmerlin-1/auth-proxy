@@ -1,0 +1,11 @@
+{
+  "bdf7f0234a195d50173b31a43f7a18e": {
+    "rate": 120,
+    "allow": ["example.com", "api.github.com"],
+    "expires": "2026-12-31"
+  },
+  "0123456789abcdef0123456789abcdef": {
+    "rate": 0,
+    "allow": []
+  }
+}

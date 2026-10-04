@@ -1,0 +1,14 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+.proxy_session
+proxy.log
+s2.log
+proxy_client.key
+proxy_client.pub
+pubkeys.txt
+*.pem
+users.json
+.venv
+venv

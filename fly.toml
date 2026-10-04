@@ -1,0 +1,44 @@
+app = "auth-proxy"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "10000"
+  TCP_PORT = "10001"
+  ENABLE_TCP_PROXY = "1"
+  PROXY_VERIFY_TLS = "1"
+  PROXY_ACCESS_LOG = "1"
+  # Set via `fly secrets set PROXY_PUBKEYS="$(cat proxy_client.pub)"`
+
+# HTTP service
+[[services]]
+  internal_port = 10000
+  protocol = "tcp"
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 200
+    soft_limit = 100
+
+# Raw TCP for CONNECT tunneling
+[[services]]
+  internal_port = 10001
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 10001
+    handlers = ["tcp"]
+
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 400
+    soft_limit = 200

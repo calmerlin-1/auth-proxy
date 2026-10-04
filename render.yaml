@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: auth-proxy
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    # gunicorn: single worker so nonce/session store stays consistent.
+    # Render exposes one port ($PORT), so TCP listener stays off.
+    startCommand: gunicorn -w 1 -k gthread --threads 8 -t 120 -b 0.0.0.0:$PORT server:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: PROXY_VERIFY_TLS
+        value: "1"
+      - key: PROXY_ACCESS_LOG
+        value: "1"
+      - key: ENABLE_TCP_PROXY
+        value: "0"
+      # Set these in the dashboard (don't commit):
+      # PROXY_PUBKEYS       = full PEM text or path
+      # PROXY_ALLOWED_HOSTS = comma-separated
+      # REDIS_URL           = optional, enables multi-worker
